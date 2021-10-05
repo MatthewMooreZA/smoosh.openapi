@@ -1,0 +1,2 @@
+# openapi.smoosh
+OpenApi transformers
