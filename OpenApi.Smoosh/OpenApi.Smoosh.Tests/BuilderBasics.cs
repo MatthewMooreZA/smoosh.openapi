@@ -11,21 +11,19 @@ namespace OpenApi.Smoosh.Tests
         public void FromOpenApi()
         {
             using var fs = File.OpenRead("./Samples/2.0.petstore-simple.json");
-            var builder = new Builder();
-
-            builder.FromOpenApi(fs);
+            var builder = (Builder)Builder.FromOpenApi(fs);
 
             Assert.NotEmpty(builder.Document.Paths);
         }
 
-        public void FromOpenApiFluent()
+        [Fact]
+        public void FromOpenApi_Fluent()
         {
-            Builder.Init()
+            var api = Builder
                 .FromOpenApi("./Samples/2.0.petstore-simple.json")
-                .KeepByPath
-                (
-                    f => f.Contains("id")
-                );
+                .Build();
+
+            Assert.NotEmpty(((Builder)api).Document.Paths);
         }
 
 
@@ -33,13 +31,22 @@ namespace OpenApi.Smoosh.Tests
         public void AdjustPath_Prefix()
         {
             using var fs = File.OpenRead("./Samples/2.0.petstore-simple.json");
-            var builder = new Builder();
-
-            builder.FromOpenApi(fs);
+            var builder = (Builder)Builder.FromOpenApi(fs);
 
             builder.AdjustPath(p => "/v1" + p);
             builder.Build();
             Assert.True(builder.Document.Paths.All(x => x.Key.StartsWith("/v1/")));
+        }
+
+        [Fact]
+        public void AdjustPath_Prefix_Fluent()
+        {
+            var api = Builder
+                .FromOpenApi("./Samples/2.0.petstore-simple.json")
+                .AdjustPath(p => "/v1" + p)
+                .Build();
+
+            Assert.True(((Builder)api).Document.Paths.All(x => x.Key.StartsWith("/v1/")));
         }
     }
 }

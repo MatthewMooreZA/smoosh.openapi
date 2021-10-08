@@ -10,7 +10,7 @@ using OpenApi.Smoosh.Common.Operations;
 
 namespace OpenApi.Smoosh.Common
 {
-    public class Builder : IBuilderInitStep, IBuilderFilterStep, IBuilderMutateStep, INextStep, IBuilderBuilt
+    public class Builder : IBuilderFilterStep, IBuilderMutateStep, INextStep, IBuilderBuilt
     {
         internal OpenApiDocument Document;
 
@@ -21,20 +21,17 @@ namespace OpenApi.Smoosh.Common
 
         protected internal Builder(){}
 
-        public static IBuilderInitStep Init()
+        public static IBuilderFilterStep FromOpenApi(Stream stream)
         {
-            return new Builder();
+            return new Builder
+            {
+                Document = new OpenApiStreamReader().Read(stream, out var diagnostic)
+            };
         }
 
-        public IBuilderFilterStep FromOpenApi(Stream stream)
+        public static IBuilderFilterStep FromOpenApi(string file)
         {
-            Document = new OpenApiStreamReader().Read(stream, out var diagnostic);
-            return this;
-        }
-
-        public IBuilderFilterStep FromOpenApi(string file)
-        {
-            return this.FromOpenApi(File.OpenRead(file));
+            return Builder.FromOpenApi(File.OpenRead(file));
         }
 
         public IBuilderMutateStep ExcludeByPath(params Predicate<string>[] matches)
@@ -82,8 +79,7 @@ namespace OpenApi.Smoosh.Common
 
         public IBuilderBuilt Merge(IBuilderBuilt other)
         {
-            var otherBuilder = other as Builder;
-            if (otherBuilder == null) return this;
+            if (!(other is Builder otherBuilder)) return this;
 
             var merge = new MergeOperation(otherBuilder.Document, _operationCount++);
             _operations.Add(merge);
