@@ -16,6 +16,8 @@ namespace OpenApi.Smoosh.Common
 
         internal FilterPathsOperation FilterPathsOperation;
 
+        private int _mergeCount = 0;
+
         public void AddOperation(IOperation operation)
         {
             _operations.Enqueue(operation);
@@ -74,7 +76,7 @@ namespace OpenApi.Smoosh.Common
         {
             if (!(other is Builder otherBuilder)) return this;
 
-            var merge = new MergeOperation(otherBuilder.Document);
+            var merge = new MergeOperation(otherBuilder.Document, _mergeCount++);
             AddOperation(merge);
             return this;
         }

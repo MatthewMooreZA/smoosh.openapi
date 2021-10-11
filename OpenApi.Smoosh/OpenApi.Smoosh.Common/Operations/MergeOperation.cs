@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.OpenApi.Models;
 
 namespace OpenApi.Smoosh.Common.Operations
@@ -6,17 +8,25 @@ namespace OpenApi.Smoosh.Common.Operations
     public class MergeOperation : IOperation
     {
         private readonly OpenApiDocument _other;
-        public MergeOperation(OpenApiDocument other)
+        private readonly string _mergeSuffix;
+        public MergeOperation(OpenApiDocument other, int mergeNumber)
         {
             _other = other;
+            _mergeSuffix = $"_{mergeNumber}";
 
         }
 
         public void Apply(OpenApiDocument document)
         {
             if (_other == null) return;
+
+            var operationIds = new HashSet<string>(
+                document.Paths.Values.SelectMany(p => p.Operations.Values.Select(o => o.OperationId)));
+
             foreach (var path in _other.Paths)
             {
+                EnsureOperationsDoNotCollide(path, operationIds);
+
                 if (!document.Paths.ContainsKey(path.Key))
                 {
                     document.Paths.Add(path.Key, path.Value);
@@ -35,6 +45,17 @@ namespace OpenApi.Smoosh.Common.Operations
                 }
 
                 throw new NotImplementedException("Handle conflicts");
+            }
+        }
+
+        private void EnsureOperationsDoNotCollide(KeyValuePair<string, OpenApiPathItem> path, HashSet<string> operationIds)
+        {
+            foreach (var operation in path.Value.Operations)
+            {
+                if (operationIds.Contains(operation.Value.OperationId))
+                {
+                    operation.Value.OperationId += _mergeSuffix;
+                }
             }
         }
     }
