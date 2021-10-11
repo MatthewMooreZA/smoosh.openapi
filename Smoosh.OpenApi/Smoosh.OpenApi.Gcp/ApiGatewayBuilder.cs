@@ -60,6 +60,24 @@ namespace Smoosh.OpenApi.Gcp
 
         public IChooseGcpService MapToCloudRun(Func<ICloudRunFilterRoutesStep, ICloudRunNext> config)
         {
+            var cloudRunBuilder = CloudRunBuilder();
+
+            config.Invoke(cloudRunBuilder);
+
+            return this;
+        }
+
+        public IChooseGcpService MapToCloudRun(Func<ICloudRunFilterRoutesStep, ITimeoutStep> config)
+        {
+            var cloudRunBuilder = CloudRunBuilder();
+
+            config.Invoke(cloudRunBuilder);
+
+            return this;
+        }
+
+        private CloudRunBuilder CloudRunBuilder()
+        {
             var operation = new CloudRunOperation
             {
                 RemappedPathsLookup = Builder.GetRemappedPathReverseLookup()
@@ -67,13 +85,10 @@ namespace Smoosh.OpenApi.Gcp
 
             Builder.AddOperation(operation);
             var cloudRunBuilder = new CloudRunBuilder(operation);
-
-            config.Invoke(cloudRunBuilder);
-
-            return this;
+            return cloudRunBuilder;
         }
 
-        private IBuilderBuilt _built = null;
+        private IBuilderBuilt _built;
 
         public OpenApiDocument Build()
         {

@@ -9,6 +9,7 @@ namespace Smoosh.OpenApi.Gcp
         IChooseGcpService KeepByPath(params Predicate<string>[] matches);
         IChooseGcpService AdjustPath(Func<string, string> transform);
         IChooseGcpService MapToCloudRun(Func<ICloudRunFilterRoutesStep, ICloudRunNext> config);
+        IChooseGcpService MapToCloudRun(Func<ICloudRunFilterRoutesStep, ITimeoutStep> config);
     }
 
     public interface IChooseGcpService
