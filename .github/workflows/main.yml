@@ -1,0 +1,36 @@
+name: publish to nuget
+on:
+  push:
+    branches:
+      - master # Default release branch
+jobs:
+  publish:
+    name: build, pack & publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # - name: Setup dotnet
+      #   uses: actions/setup-dotnet@v1
+      #   with:
+      #     dotnet-version: 3.1.200
+
+      - name: publish Smoosh.Common
+        id: publish_common
+        uses: rohith/publish-nuget@v2
+        with:
+          # Filepath of the project to be packaged, relative to root of repository
+          PROJECT_FILE_PATH: OpenApi.Smoosh/OpenApi.Smoosh.Common/OpenApi.Smoosh.Common.csproj
+          
+          # API key to authenticate with NuGet server
+          NUGET_KEY: ${{secrets.NUGET}}
+
+      - name: publish Smoosh.Gcp
+        id: publish_gcp
+        uses: rohith/publish-nuget@v2
+        with:
+          # Filepath of the project to be packaged, relative to root of repository
+          PROJECT_FILE_PATH: OpenApi.Smoosh/OpenApi.Smoosh.Common/OpenApi.Smoosh.Common.csproj
+          
+          # API key to authenticate with NuGet server
+          NUGET_KEY: ${{secrets.NUGET}}
