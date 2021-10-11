@@ -102,7 +102,8 @@ namespace OpenApi.Smoosh.Tests.Gcp
 
             foreach (var operationXGoogleBackend in xGoogleBackend)
             {
-                Assert.Equal("CONSTANT_ADDRESS", operationXGoogleBackend["path_translation"].ToString());
+                var pathTranslation = operationXGoogleBackend["path_translation"] as OpenApiString;
+                Assert.Equal("CONSTANT_ADDRESS", pathTranslation?.Value);
             }
         }
     }

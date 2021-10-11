@@ -25,7 +25,21 @@ namespace OpenApi.Smoosh.Gcp.Operations
                 foreach (var operation in path.Value.Operations)
                 {
                     var backendExtension = new GoogleBackendExtension();
-                    backendExtension.SetUrl(CloudRunUrl);
+
+                    if (RemappedPathsLookup.ContainsKey(path.Key))
+                    {
+                        var originalPath = RemappedPathsLookup[path.Key];
+
+                        var uri = new Uri(CloudRunUrl);
+                        var combined = new Uri(uri, originalPath);
+                        backendExtension.SetRemappedUrl(combined.ToString());
+                    }
+                    else
+                    {
+                        backendExtension.SetUrl(CloudRunUrl);
+                    }
+
+
                     backendExtension.SetProtocol(Protocol);
                     if (Timeout != null)
                     {
