@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.OpenApi.Models;
 
 namespace OpenApi.Smoosh.Common.Operations

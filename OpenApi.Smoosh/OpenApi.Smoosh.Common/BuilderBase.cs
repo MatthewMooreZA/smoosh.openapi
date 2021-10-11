@@ -75,5 +75,10 @@ namespace OpenApi.Smoosh.Common
 
             return this;
         }
+
+        public OpenApiDocument ToOpenApiDocument()
+        {
+            return Document;
+        }
     }
 }

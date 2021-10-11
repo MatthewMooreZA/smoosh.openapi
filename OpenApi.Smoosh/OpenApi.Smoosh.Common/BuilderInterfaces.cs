@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace OpenApi.Smoosh.Common
 {
@@ -27,5 +28,6 @@ namespace OpenApi.Smoosh.Common
     public interface IBuilderBuilt
     {
         IBuilderBuilt Merge(IBuilderBuilt other);
+        OpenApiDocument ToOpenApiDocument();
     }
 }

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.IO;
+using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Writers;
 using OpenApi.Smoosh.Common;
+using OpenApi.Smoosh.Gcp.Operations;
 
 namespace OpenApi.Smoosh.Gcp
 {
-    public class ApiGatewayBuilder : IApiGatewayFilterStep, IChooseGcpService, IApiGatewayNextStep
+    public class ApiGatewayBuilder : IApiGatewayFilterStep, IChooseGcpService
     {
         internal Builder Builder;
         protected internal ApiGatewayBuilder(){}
@@ -17,9 +20,9 @@ namespace OpenApi.Smoosh.Gcp
             };
         }
 
-        public static IBuilderFilterStep FromOpenApi(string file)
+        public static IApiGatewayFilterStep FromOpenApi(string file)
         {
-            return Builder.FromOpenApi(File.OpenRead(file));
+            return FromOpenApi(File.OpenRead(file));
         }
 
         public IChooseGcpService ExcludeByPath(params Predicate<string>[] matches)
@@ -40,9 +43,46 @@ namespace OpenApi.Smoosh.Gcp
             return this;
         }
 
-        public IApiGatewayNextStep Build()
+
+        public IChooseGcpService MapToCloudRun(Func<ICloudRunFilterRoutesStep, ICloudRunNext> config)
         {
-            throw new NotImplementedException();
+            var operation = new CloudRunOperation();
+            Builder.AddOperation(operation);
+
+            var cloudRunBuilder = new CloudRunBuilder(operation);
+
+            config.Invoke(cloudRunBuilder);
+
+            return this;
+        }
+
+        private IBuilderBuilt _built = null;
+
+        public OpenApiDocument Build()
+        {
+            if (_built == null)
+            {
+                _built = Builder.Build();
+            }
+            return _built.ToOpenApiDocument();
+        }
+
+        public void ToJson(string path)
+        {
+            var doc = Build();
+            using (var sw = new StreamWriter(path, false))
+            {
+                doc.SerializeAsV2(new OpenApiJsonWriter(sw));
+            }
+        }
+
+        public void ToYaml(string path)
+        {
+            var doc = Build();
+            using (var sw = new StreamWriter(path, false))
+            {
+                doc.SerializeAsV2(new OpenApiYamlWriter(sw));
+            }
         }
     }
 }

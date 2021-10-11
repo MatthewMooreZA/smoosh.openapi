@@ -8,7 +8,6 @@ using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
 using OpenApi.Smoosh.Common.Extensions;
 using OpenApi.Smoosh.Common.Operations;
-using SharpYaml.Events;
 using Xunit;
 
 namespace OpenApi.Smoosh.Tests
