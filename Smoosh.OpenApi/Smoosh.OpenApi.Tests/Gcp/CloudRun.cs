@@ -27,6 +27,21 @@ namespace Smoosh.OpenApi.Tests.Gcp
         }
 
         [Fact]
+        public void MapToCloudRun_Should_StripAwayHost()
+        {
+            var next =
+                ApiGatewayBuilder
+                    .FromOpenApi("./Samples/2.0.uber.json")
+                    .MapToCloudRun(config => config
+                        .WithUrl("https://is-this-thing-on.com")
+                        .WithProtocol(Protocols.Http2)
+                        .WithApiKey());
+
+            var build = next.Build();
+            Assert.Empty(build.Servers);
+        }
+
+        [Fact]
         public void MapToCloudRunBasic_Documentation_Example1()
         {
             ApiGatewayBuilder

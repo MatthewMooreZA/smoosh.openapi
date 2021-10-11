@@ -17,6 +17,7 @@ namespace Smoosh.OpenApi.Gcp.Operations
         public IReadOnlyDictionary<string, string> RemappedPathsLookup = new Dictionary<string, string>();
         public void Apply(OpenApiDocument document)
         {
+            document.Servers.Clear();
             Security.Apply(document);
             foreach (var path in document.Paths)
             {
@@ -50,7 +51,6 @@ namespace Smoosh.OpenApi.Gcp.Operations
                     }
 
                     Security.Apply(document, operation.Value);
-
                 }
             }
         }
