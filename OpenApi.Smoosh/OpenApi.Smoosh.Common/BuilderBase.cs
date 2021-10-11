@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using OpenApi.Smoosh.Common.Extensions;
@@ -13,13 +12,13 @@ namespace OpenApi.Smoosh.Common
     {
         internal OpenApiDocument Document;
 
-        private readonly List<IOperation> _operations = new List<IOperation>();
+        private readonly Queue<IOperation> _operations = new Queue<IOperation>();
 
         internal FilterPathsOperation FilterPathsOperation;
 
         public void AddOperation(IOperation operation)
         {
-            _operations.Add(operation);
+            _operations.Enqueue(operation);
         }
 
         public IBuilderMutateStep ExcludeByPath(params Predicate<string>[] matches)
@@ -55,10 +54,12 @@ namespace OpenApi.Smoosh.Common
             return this;
         }
 
+
         public IBuilderBuilt Build()
         {
-            foreach (var operation in _operations)
+            while (_operations.Count > 0)
             {
+                var operation = _operations.Dequeue();
                 operation.Apply(Document);
             }
 
@@ -75,9 +76,6 @@ namespace OpenApi.Smoosh.Common
 
             var merge = new MergeOperation(otherBuilder.Document);
             AddOperation(merge);
-
-            merge.Apply(this.Document);
-
             return this;
         }
 
