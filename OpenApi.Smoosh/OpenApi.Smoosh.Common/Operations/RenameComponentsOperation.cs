@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.OpenApi.Models;
 using OpenApi.Smoosh.Common.Extensions;
 
@@ -9,18 +8,10 @@ namespace OpenApi.Smoosh.Common.Operations
     {
         private readonly string _suffix;
 
-        public RenameComponentsOperation(string suffix, int ordinal)
+        public RenameComponentsOperation(string suffix)
         {
             _suffix = suffix;
-            Ordinal = ordinal;
         }
-
-        public RenameComponentsOperation(int ordinal) 
-            : this(Guid.NewGuid().ToString(), ordinal)
-        {
-        }
-
-        public int Ordinal { get; }
 
         public void Apply(OpenApiDocument document)
         {

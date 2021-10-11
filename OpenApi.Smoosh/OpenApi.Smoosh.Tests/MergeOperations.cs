@@ -21,7 +21,7 @@ namespace OpenApi.Smoosh.Tests
 
             int expectedSchemes = petDoc.Components.Schemas.Count + uberDoc.Components.Schemas.Count;
 
-            var mergeOperation = new MergeOperation(uberDoc, 0);
+            var mergeOperation = new MergeOperation(uberDoc);
 
             mergeOperation.Apply(petDoc); // merge uber onto pets
 

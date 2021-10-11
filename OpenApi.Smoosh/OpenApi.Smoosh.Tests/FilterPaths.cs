@@ -19,7 +19,7 @@ namespace OpenApi.Smoosh.Tests
 
             var countBefore = doc.Paths.Count;
 
-            var filter = new FilterPathsOperation(PathFilterStrategy.Exclude, 0);
+            var filter = new FilterPathsOperation(PathFilterStrategy.Exclude);
             var toFilter = doc.Paths.First().Key;
             filter.Strategy.AddPredicates(new Predicate<string>[]
             {
@@ -39,7 +39,7 @@ namespace OpenApi.Smoosh.Tests
 
             var countBefore = doc.Paths.Count;
 
-            var filter = new FilterPathsOperation(PathFilterStrategy.Keep, 0);
+            var filter = new FilterPathsOperation(PathFilterStrategy.Keep);
             var toFilter = doc.Paths.First().Key;
             filter.Strategy.AddPredicates(new Predicate<string>[]
             {

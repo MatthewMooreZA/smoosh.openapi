@@ -6,11 +6,9 @@ namespace OpenApi.Smoosh.Common.Operations
 {
     public class FilterPathsOperation : IOperation
     {
-        public int Ordinal { get; }
-
         public PathFilterStrategy Strategy { get; }
 
-        public FilterPathsOperation(PathFilterStrategy strategy, int ordinal)
+        public FilterPathsOperation(PathFilterStrategy strategy)
         {
             Strategy = strategy;
         }

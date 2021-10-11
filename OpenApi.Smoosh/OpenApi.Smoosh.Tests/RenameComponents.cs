@@ -21,7 +21,7 @@ namespace OpenApi.Smoosh.Tests
         {
             var doc = new OpenApiStreamReader().Read(File.OpenRead(path), out var diagnostic);
 
-            var rename = new RenameComponentsOperation("test", 0);
+            var rename = new RenameComponentsOperation("test");
 
             rename.Apply(doc);
             Assert.True(doc.Components.Schemas.Keys.All(x => x.EndsWith("_test")));
@@ -34,7 +34,7 @@ namespace OpenApi.Smoosh.Tests
         {
             var doc = new OpenApiStreamReader().Read(File.OpenRead(path), out var diagnostic);
 
-            var rename = new RenameComponentsOperation("test", 0);
+            var rename = new RenameComponentsOperation("test");
 
             rename.Apply(doc);
 
@@ -51,7 +51,7 @@ namespace OpenApi.Smoosh.Tests
         {
             var doc = new OpenApiStreamReader().Read(File.OpenRead("./Samples/2.0.petstore-simple.json"), out var diagnostic);
 
-            var rename = new RenameComponentsOperation("test", 0);
+            var rename = new RenameComponentsOperation("test");
 
             rename.Apply(doc);
             Assert.True(doc.Paths.Values.SelectMany(p => p.Operations.Values).All(x => x.OperationId.EndsWith("_test")));

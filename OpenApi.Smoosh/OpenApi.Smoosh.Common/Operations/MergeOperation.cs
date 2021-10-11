@@ -6,12 +6,12 @@ namespace OpenApi.Smoosh.Common.Operations
     public class MergeOperation : IOperation
     {
         private readonly OpenApiDocument _other;
-        public MergeOperation(OpenApiDocument other, int ordinal)
+        public MergeOperation(OpenApiDocument other)
         {
             _other = other;
-            Ordinal = ordinal;
+
         }
-        public int Ordinal { get; }
+
         public void Apply(OpenApiDocument document)
         {
             if (_other == null) return;

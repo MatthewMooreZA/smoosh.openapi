@@ -17,7 +17,7 @@ namespace OpenApi.Smoosh.Tests
         {
             var doc = new OpenApiStreamReader().Read(File.OpenRead("./Samples/2.0.petstore-simple.json"), out var diagnostic);
 
-            var adjust = new AdjustPathsOperation(p => "/v1" + p, 0);
+            var adjust = new AdjustPathsOperation(p => "/v1" + p);
 
             int pathAdjustmentCount = 0;
 

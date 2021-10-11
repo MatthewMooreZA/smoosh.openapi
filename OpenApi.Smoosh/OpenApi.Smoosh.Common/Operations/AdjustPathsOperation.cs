@@ -9,13 +9,10 @@ namespace OpenApi.Smoosh.Common.Operations
     {
         private readonly Func<string, string> _transform;
 
-        public AdjustPathsOperation(Func<string, string> transform, int ordinal)
+        public AdjustPathsOperation(Func<string, string> transform)
         {
             _transform = transform;
-            Ordinal = ordinal;
         }
-
-        public int Ordinal { get; }
 
         public void Apply(OpenApiDocument document)
         {
