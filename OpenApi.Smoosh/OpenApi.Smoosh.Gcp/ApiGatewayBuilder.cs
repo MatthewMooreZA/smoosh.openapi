@@ -22,6 +22,19 @@ namespace OpenApi.Smoosh.Gcp
             };
         }
 
+        public static IApiGatewayFilterStep FromBuilder(IBuilderBuilt builder)
+        {
+            if (!(builder is Builder genericBuilder))
+            {
+                throw new ArgumentException();
+            }
+
+            return new ApiGatewayBuilder
+            {
+                Builder = genericBuilder
+            };
+        }
+
         public static IApiGatewayFilterStep FromOpenApi(string file)
         {
             return FromOpenApi(File.OpenRead(file));
