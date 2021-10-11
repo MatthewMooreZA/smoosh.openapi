@@ -19,14 +19,76 @@ namespace Smoosh.OpenApi.Tests.Gcp
                     .MapToCloudRun(config => config
                         .WithUrl("https://is-this-thing-on.com")
                         .WithProtocol(Protocols.Http2)
-                        .WithApiKey()
-                        .WithTimeout(TimeSpan.FromSeconds(15)));
+                        .WithApiKey());
             
             var build = next.Build();
 
             Assert.True(build.Components.SecuritySchemes.Any());
+        }
 
-            next.ToJson("test.json");
+        [Fact]
+        public void MapToCloudRunBasic_Documentation_Example1()
+        {
+            ApiGatewayBuilder
+                .FromOpenApi("./Samples/2.0.uber.json")
+                .MapToCloudRun(config => config
+                    .WithUrl("https://is-this-thing-on.com")
+                    .WithProtocol(Protocols.Http2)
+                    .WithApiKey()
+                ).ToJson("api-gateway.json");
+        }
+
+        [Fact]
+        public void MapToCloudRunBasic_Documentation_Example2()
+        {
+            var url = "https://uber-pets.a.run.app";
+            ApiGatewayBuilder
+                .FromOpenApi("./Samples/2.0.uber.json")
+                .MapToCloudRun(config => config
+                    .WithUrl(url)
+                    .WithProtocol(Protocols.Http2)
+                    .WithApiKey()
+                    .WithTimeout(TimeSpan.FromSeconds(15)))
+                .MapToCloudRun(config => config
+                    .WithPaths(p => p.StartsWith("/estimates"))
+                    .WithUrl(url)
+                    .WithProtocol(Protocols.Http2)
+                    .WithNoAuth()
+                    .WithTimeout(TimeSpan.FromSeconds(30))
+                ).ToYaml("api-gateway.yaml");
+        }
+
+        [Fact]
+        public void MapToCloudRunBasic_Documentation_Example3()
+        {
+            Builder
+                .FromOpenApi("./Samples/2.0.uber.json")
+                .Build().Merge(
+                    Builder
+                    .FromOpenApi("./Samples/2.0.petstore-simple.json")
+                    .Build())
+                .WithApiGateway()
+                .MapToCloudRun(config => config
+                    .WithUrl("https://uber-pets.a.run.app")
+                    .WithProtocol(Protocols.Http2)
+                    .WithApiKey());
+        }
+
+        [Fact]
+        public void MapToCloudRunBasicWithTimeout()
+        {
+            var next =
+                ApiGatewayBuilder
+                    .FromOpenApi("./Samples/2.0.uber.json")
+                    .MapToCloudRun(config => config
+                        .WithUrl("https://is-this-thing-on.com")
+                        .WithProtocol(Protocols.Http2)
+                        .WithApiKey()
+                        .WithTimeout(TimeSpan.FromSeconds(15)));
+
+            var build = next.Build();
+
+            Assert.True(build.Components.SecuritySchemes.Any());
         }
 
         [Fact]
