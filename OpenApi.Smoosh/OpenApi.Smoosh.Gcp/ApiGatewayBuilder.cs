@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using Microsoft.OpenApi;
+using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Writers;
 using OpenApi.Smoosh.Common;
@@ -70,19 +72,15 @@ namespace OpenApi.Smoosh.Gcp
         public void ToJson(string path)
         {
             var doc = Build();
-            using (var sw = new StreamWriter(path, false))
-            {
-                doc.SerializeAsV2(new OpenApiJsonWriter(sw));
-            }
+            var json = doc.Serialize(OpenApiSpecVersion.OpenApi2_0, OpenApiFormat.Json);
+            File.WriteAllText(path, json);
         }
 
         public void ToYaml(string path)
         {
             var doc = Build();
-            using (var sw = new StreamWriter(path, false))
-            {
-                doc.SerializeAsV2(new OpenApiYamlWriter(sw));
-            }
+            var yaml = doc.Serialize(OpenApiSpecVersion.OpenApi2_0, OpenApiFormat.Yaml);
+            File.WriteAllText(path, yaml);
         }
     }
 }

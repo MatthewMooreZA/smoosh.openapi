@@ -13,7 +13,7 @@ namespace OpenApi.Smoosh.Gcp.Operations
         public string CloudRunUrl { get; set; }
         public Protocols Protocol { get; set; }
         public Security Security { get; set; }
-        public TimeSpan Timeout { get; set; }
+        public TimeSpan? Timeout { get; set; }
         public List<Predicate<string>> PathFilter { get; set; } = new List<Predicate<string>>();
         public int Ordinal { get; }
         public void Apply(OpenApiDocument document)
@@ -23,7 +23,7 @@ namespace OpenApi.Smoosh.Gcp.Operations
             {
                 foreach (var operation in path.Value.Operations)
                 {
-                    if (!TryAddGoogleBackendExtension(operation.Value.Extensions, CloudRunUrl))
+                    if (!TryAddGoogleBackendExtension(operation.Value.Extensions, CloudRunUrl, Protocol, Timeout))
                     {
                         throw new Exception("Failed to map to Google Backend");
                     }

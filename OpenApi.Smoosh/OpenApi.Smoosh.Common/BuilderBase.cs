@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using OpenApi.Smoosh.Common.Extensions;
 using OpenApi.Smoosh.Common.Models;
 using OpenApi.Smoosh.Common.Operations;
 
@@ -59,7 +62,11 @@ namespace OpenApi.Smoosh.Common
             foreach (var operation in _operations.OrderBy(op => op.Ordinal))
             {
                 operation.Apply(Document);
-            } 
+            }
+
+            var version = GetType().Assembly.GetName().Version.ToString();
+            Document.Extensions.TryRemove("x-generator");
+            Document.Extensions.Add("x-generator", new OpenApiString($"OpenApi Smoosh - {version}"));
 
             return this;
         }

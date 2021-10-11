@@ -12,5 +12,16 @@ namespace OpenApi.Smoosh.Common.Extensions
 
             return item;
         }
+
+        public static bool TryRemove<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+        {
+            if (dictionary.ContainsKey(key))
+            {
+                dictionary.Remove(key);
+                return true;
+            }
+
+            return false;
+        }
     }
 }
