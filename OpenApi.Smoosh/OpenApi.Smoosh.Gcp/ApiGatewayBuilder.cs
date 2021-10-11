@@ -61,9 +61,12 @@ namespace OpenApi.Smoosh.Gcp
 
         public IChooseGcpService MapToCloudRun(Func<ICloudRunFilterRoutesStep, ICloudRunNext> config)
         {
-            var operation = new CloudRunOperation();
-            Builder.AddOperation(operation);
+            var operation = new CloudRunOperation
+            {
+                RemappedPathsLookup = Builder.GetRemappedPathReverseLookup()
+            };
 
+            Builder.AddOperation(operation);
             var cloudRunBuilder = new CloudRunBuilder(operation);
 
             config.Invoke(cloudRunBuilder);

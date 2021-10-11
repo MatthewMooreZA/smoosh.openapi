@@ -10,32 +10,18 @@ namespace OpenApi.Smoosh.Gcp
     {
         public const string GoogleBackendExtension = "x-google-backend";
 
-        public bool TryAddGoogleBackendExtension(IDictionary<string, IOpenApiExtension> extensions, string url, Protocols protocol, TimeSpan? timeout)
+        public bool TryAddGoogleBackendExtension(IDictionary<string, IOpenApiExtension> extensions, GoogleBackendExtension googleBackendExtension)
         {
             if (extensions.ContainsKey(GoogleBackendExtension))
             {
                 extensions.Remove(GoogleBackendExtension);
             }
-
-            var backendProps = new OpenApiObject
-            {
-                {"address", new OpenApiString(url)},
-                {"protocol", new OpenApiString(ProtocolToString(protocol))}
-            };
-
-            if (timeout.HasValue)
-            {
-                backendProps.Add("deadline", new OpenApiDouble(timeout.Value.TotalSeconds));
-            }
-
-            extensions.Add(GoogleBackendExtension, backendProps);
+            
+            extensions.Add(GoogleBackendExtension, googleBackendExtension.ToOpenApiObject());
             return true;
         }
 
-        private string ProtocolToString(Protocols protocol)
-        {
-            return protocol == Protocols.Http2 ? "h2" : "http/1.1";
-        }
+
 
     }
 }

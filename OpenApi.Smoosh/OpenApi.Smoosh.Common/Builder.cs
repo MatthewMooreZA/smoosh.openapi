@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using Microsoft.OpenApi.Readers;
 
 namespace OpenApi.Smoosh.Common
@@ -18,6 +20,11 @@ namespace OpenApi.Smoosh.Common
         public static IBuilderFilterStep FromOpenApi(string file)
         {
             return Builder.FromOpenApi(File.OpenRead(file));
+        }
+
+        public IReadOnlyDictionary<string, string> GetRemappedPathReverseLookup()
+        {
+            return new ReadOnlyDictionary<string, string>(RemappedPathReverseLookup);
         }
     }
 }

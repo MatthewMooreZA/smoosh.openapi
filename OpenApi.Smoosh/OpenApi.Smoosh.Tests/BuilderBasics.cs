@@ -39,6 +39,17 @@ namespace OpenApi.Smoosh.Tests
         }
 
         [Fact]
+        public void AdjustPath_Should_ContainReverseMap()
+        {
+            using var fs = File.OpenRead("./Samples/2.0.petstore-simple.json");
+            var builder = (Builder)Builder.FromOpenApi(fs);
+
+            builder.AdjustPath(p => "/v1" + p);
+            builder.Build();
+            Assert.NotEmpty(builder.RemappedPathReverseLookup);
+        }
+
+        [Fact]
         public void AdjustPath_Prefix_Fluent()
         {
             var api = Builder

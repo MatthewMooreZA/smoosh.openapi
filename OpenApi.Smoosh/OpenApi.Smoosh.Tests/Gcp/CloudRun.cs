@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.OpenApi.Any;
 using OpenApi.Smoosh.Common;
 using OpenApi.Smoosh.Gcp;
 using OpenApi.Smoosh.Gcp.Models;
@@ -80,6 +81,29 @@ namespace OpenApi.Smoosh.Tests.Gcp
 
             Assert.True(build.Components.SecuritySchemes.Any());
             next.ToJson("test3.json");
+        }
+
+        [Fact]
+        public void AdjustedPathShouldMapToConstantAddress()
+        {
+            var next = Builder
+                .FromOpenApi("./Samples/2.0.uber.json")
+                .AdjustPath(p => "/v1" + p)
+                .Build().WithApiGateway()
+                .MapToCloudRun(config => config
+                        .WithUrl("https://is-this-thing-on.com")
+                        .WithProtocol(Protocols.Http2)
+                        .WithApiKey()
+                        .WithTimeout(TimeSpan.FromSeconds(15)));
+
+            var build = next.Build();
+
+            var xGoogleBackend = build.Paths.Values.SelectMany(p => p.Operations.Values.Select(o => o.Extensions["x-google-backend"])).OfType<OpenApiObject>();
+
+            foreach (var operationXGoogleBackend in xGoogleBackend)
+            {
+                Assert.Equal("CONSTANT_ADDRESS", operationXGoogleBackend["path_translation"].ToString());
+            }
         }
     }
 }

@@ -18,6 +18,8 @@ namespace OpenApi.Smoosh.Common
 
         private int _mergeCount = 0;
 
+        internal Dictionary<string, string> RemappedPathReverseLookup = new Dictionary<string, string>();
+
         public void AddOperation(IOperation operation)
         {
             _operations.Enqueue(operation);
@@ -52,7 +54,14 @@ namespace OpenApi.Smoosh.Common
 
         public INextStep AdjustPath(Func<string, string> transform)
         {
-            AddOperation(new AdjustPathsOperation(transform));
+            var operation = new AdjustPathsOperation(transform);
+            AddOperation(operation);
+
+            operation.OnPathAdjustment += (oldPath, newPath, _) =>
+            {
+                RemappedPathReverseLookup.Add(newPath, oldPath);
+            };
+
             return this;
         }
 
@@ -78,6 +87,12 @@ namespace OpenApi.Smoosh.Common
 
             var merge = new MergeOperation(otherBuilder.Document, _mergeCount++);
             AddOperation(merge);
+
+            foreach (var mapping in otherBuilder.RemappedPathReverseLookup)
+            {
+                RemappedPathReverseLookup.Add(mapping.Key, mapping.Value);
+            }
+
             return this;
         }
 

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using OpenApi.Smoosh.Gcp.Models;
 using OpenApi.Smoosh.Gcp.Operations;
 
 namespace OpenApi.Smoosh.Gcp
 {
-    public class CloudRunBuilder : ICloudRunFilterRoutesStep, ICloudRunHostStep, IProtocolOrSecurityStep, ISecurityStep, ITimeoutStep, ICloudRunNext
+    public class CloudRunBuilder : ICloudRunFilterRoutesStep, IProtocolOrSecurityStep, ISecurityStep, ITimeoutStep, ICloudRunNext
     {
         private readonly CloudRunOperation _operation;
         public CloudRunBuilder(CloudRunOperation operation)
