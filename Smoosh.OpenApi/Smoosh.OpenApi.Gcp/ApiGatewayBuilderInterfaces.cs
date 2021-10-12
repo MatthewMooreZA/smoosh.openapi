@@ -15,6 +15,7 @@ namespace Smoosh.OpenApi.Gcp
     public interface IChooseGcpService
     {
         IChooseGcpService MapToCloudRun(Func<ICloudRunFilterRoutesStep, ICloudRunNext> config);
+        IChooseGcpService MapToCloudRun(Func<ICloudRunFilterRoutesStep, ITimeoutStep> config);
         OpenApiDocument Build();
         void ToJson(string path);
         void ToYaml(string path);

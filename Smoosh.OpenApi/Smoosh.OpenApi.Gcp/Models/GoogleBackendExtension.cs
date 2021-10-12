@@ -17,7 +17,9 @@ namespace Smoosh.OpenApi.Gcp.Models
         public void SetUrl(string url)
         {
             _openApiElements.TryRemove(Address);
+            _openApiElements.TryRemove(PathTranslation);
             _openApiElements.Add(Address, new OpenApiString(url));
+            _openApiElements.Add(PathTranslation, new OpenApiString("APPEND_PATH_TO_ADDRESS"));
         }
 
         public void SetRemappedUrl(string remappedUrl)
