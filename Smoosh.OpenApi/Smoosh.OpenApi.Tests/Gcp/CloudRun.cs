@@ -183,5 +183,24 @@ namespace Smoosh.OpenApi.Tests.Gcp
                 Assert.Equal("CONSTANT_ADDRESS", pathTranslation?.Value);
             }
         }
+
+        [Fact]
+        public void Payments()
+        {
+            var url = "https://tfl-01-comair-payments-api-zv74qmv6ra-ew.a.run.app";
+            ApiGatewayBuilder
+                .FromOpenApi(@"C:\git\Teraflow\Comair.Payments\Comair.Payments.Infra\api-gateway-dev.json")
+                .ExcludeByPath(p => p.StartsWith("/PaymentsBackChannel"))
+                .MapToCloudRun(config => config
+                    .WithUrl(url)
+                    .WithProtocol(Protocols.Http2)
+                    .WithApiKey())
+                .MapToCloudRun(config => config
+                    .WithPaths(p => p.StartsWith("/Payu"))
+                    .WithUrl(url)
+                    .WithProtocol(Protocols.Http2)
+                    .WithNoAuth())
+                .ToJson(@"C:\git\Teraflow\Comair.Payments\Comair.Payments.Infra\api-gateway-dev.gen.json");
+        }
     }
 }
