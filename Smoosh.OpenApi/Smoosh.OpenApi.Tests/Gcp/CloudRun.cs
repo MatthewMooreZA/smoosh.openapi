@@ -157,7 +157,6 @@ namespace Smoosh.OpenApi.Tests.Gcp
             var build = next.Build();
 
             Assert.True(build.Components.SecuritySchemes.Any());
-            next.ToJson("test3.json");
         }
 
         [Fact]
@@ -182,6 +181,40 @@ namespace Smoosh.OpenApi.Tests.Gcp
                 var pathTranslation = operationXGoogleBackend["path_translation"] as OpenApiString;
                 Assert.Equal("CONSTANT_ADDRESS", pathTranslation?.Value);
             }
+        }
+
+        [Theory]
+        [InlineData(1, "/me")]
+        [InlineData(1, "/history")]
+        [InlineData(2, "/history", "/me")]
+        public void WithPathsFilter_Should_Filter_SecurityRules(int expectedCount, params string[] startsWith)
+        {
+            var url = "https://uber-tests.a.run.app";
+
+            var predicates = startsWith
+                .Select(x => new Predicate<string>(p => p.StartsWith(x)))
+                .ToArray();
+
+            var builder =
+                ApiGatewayBuilder.FromOpenApi("./Samples/2.0.uber.json")
+                .MapToCloudRun(config => config
+                    .WithUrl(url)
+                    .WithApiKey())
+                .MapToCloudRun(config => config
+                    .WithPaths(predicates)
+                    .WithUrl(url)
+                    .WithProtocol(Protocols.Http2)
+                    .WithNoAuth()
+                );
+
+            var build = builder.Build();
+
+            var operationsWithNoSecurity = build.Paths
+                .SelectMany(x => x.Value.Operations.Values
+                    .Select(o => o.Security))
+                .Count(x => x.Count == 1 && x[0].Count == 0);
+
+            Assert.Equal(expectedCount, operationsWithNoSecurity);
         }
     }
 }

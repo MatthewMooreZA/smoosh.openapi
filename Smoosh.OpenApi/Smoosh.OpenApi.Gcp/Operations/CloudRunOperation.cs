@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.OpenApi.Models;
 using Smoosh.OpenApi.Common.Operations;
 using Smoosh.OpenApi.Gcp.Models;
@@ -21,6 +22,10 @@ namespace Smoosh.OpenApi.Gcp.Operations
             Security.Apply(document);
             foreach (var path in document.Paths)
             {
+                if (PathFilter.Any() && PathFilter.All(filter => !filter.Invoke(path.Key)))
+                {
+                    continue;
+                }
                 foreach (var operation in path.Value.Operations)
                 {
                     var backendExtension = new GoogleBackendExtension();

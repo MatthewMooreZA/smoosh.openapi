@@ -103,7 +103,7 @@ namespace Smoosh.OpenApi.Gcp
         {
             var doc = Build();
             var json = doc.Serialize(OpenApiSpecVersion.OpenApi2_0, OpenApiFormat.Json);
-            File.WriteAllText(path, json);
+             File.WriteAllText(path, json);
         }
 
         public void ToYaml(string path)
