@@ -38,13 +38,9 @@ namespace Smoosh.OpenApi.Common.Operations
 
             foreach (var scheme in _other.Components.Schemas)
             {
-                if (!document.Components.Schemas.ContainsKey(scheme.Key))
-                {
-                    document.Components.Schemas.Add(scheme.Key, scheme.Value);
-                    continue;
-                }
-
-                throw new NotImplementedException("Handle conflicts");
+                // todo: evaluate schema elements to reduce duplication
+                scheme.Value.Reference.Id += _mergeSuffix;
+                document.Components.Schemas.Add(scheme.Key + _mergeSuffix, scheme.Value);
             }
         }
 
