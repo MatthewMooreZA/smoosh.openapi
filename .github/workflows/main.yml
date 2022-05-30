@@ -17,7 +17,7 @@ jobs:
 
       - name: publish Smoosh.Common
         id: publish_common
-        uses: alirezanet/publish-nuget@v3.0.0
+        uses: brandedoutcast/publish-nuget@v2
         with:
           # Filepath of the project to be packaged, relative to root of repository
           PROJECT_FILE_PATH: Smoosh.OpenApi/Smoosh.OpenApi.Common/Smoosh.OpenApi.Common.csproj
@@ -27,7 +27,7 @@ jobs:
 
       - name: publish Smoosh.Gcp
         id: publish_gcp
-        uses: alirezanet/publish-nuget@v3.0.0
+        uses: brandedoutcast/publish-nuget@v2
         with:
           # Filepath of the project to be packaged, relative to root of repository
           PROJECT_FILE_PATH: Smoosh.OpenApi/Smoosh.OpenApi.Gcp/Smoosh.OpenApi.Gcp.csproj
